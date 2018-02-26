@@ -56,6 +56,23 @@ class MpGrapherController {
 
     fun initialize() {
         future = executor.scheduleAtFixedRate(::process, 0L, 5L, TimeUnit.MILLISECONDS)
+
+        leftP.textProperty().addListener {
+            _, _, newValue ->
+            rightP.text = newValue
+        }
+        leftD.textProperty().addListener {
+            _, _, newValue ->
+            rightD.text = newValue
+        }
+        leftV.textProperty().addListener {
+            _, _, newValue ->
+            rightV.text = newValue
+        }
+        leftA.textProperty().addListener {
+            _, _, newValue ->
+            rightA.text = newValue
+        }
     }
 
     private var lastState = "not connected"
