@@ -1,14 +1,9 @@
 package org.team401.mpgrapher
 
-import edu.wpi.first.networktables.NetworkTableInstance
-import edu.wpi.first.wpilibj.networktables.NetworkTable
 import javafx.application.Application
 import javafx.fxml.FXMLLoader
 import javafx.scene.Parent
 import javafx.scene.Scene
-import javafx.scene.control.Button
-import javafx.scene.layout.StackPane
-import javafx.scene.text.Font
 import javafx.stage.Stage
 
 /*
@@ -37,10 +32,5 @@ class MpGrapher: Application() {
         stage.title = "401 RIORunner Tuning Utility"
         stage.scene = scene
         stage.show()
-    }
-
-    override fun stop() {
-        super.stop()
-
     }
 }

@@ -1,6 +1,7 @@
 package org.team401.mpgrapher
 
 import com.google.gson.Gson
+import javafx.application.Platform
 import javafx.event.ActionEvent
 import javafx.fxml.FXML
 import javafx.scene.chart.LineChart
@@ -8,7 +9,6 @@ import javafx.scene.chart.XYChart
 import javafx.scene.control.TextField
 import java.util.concurrent.Executors
 import java.util.concurrent.ScheduledFuture
-import java.util.concurrent.ThreadFactory
 import java.util.concurrent.TimeUnit
 
 /*
@@ -55,7 +55,7 @@ class MpGrapherController {
     private val gson = Gson()
 
     fun initialize() {
-        future = executor.scheduleAtFixedRate(::process, 0L, 10L, TimeUnit.MILLISECONDS)
+        future = executor.scheduleAtFixedRate(::process, 0L, 5L, TimeUnit.MILLISECONDS)
     }
 
     private var lastState = "not connected"
@@ -65,7 +65,7 @@ class MpGrapherController {
 
     private fun process() {
         currentState = SmartDashboard.getString(key("state"), "not connected")
-        currentData = SmartDashboard.getString(key("current"), "")
+        currentData = SmartDashboard.getString(key("current"), "{}")
         if (currentState == "ready" && lastState != "ready") { //If transitioning to ready
             renderNewData() //Render our new data
         }
@@ -73,7 +73,7 @@ class MpGrapherController {
             if (lastState != "running") { //If we transitioned to running
                 data.clear() //Clear old data
             }
-            if (currentData != data.lastOrNull()) { //If this is new data
+            if (currentData != "{}" && currentData != data.lastOrNull()) { //If this is new data
                 data.add(currentData) //Add it
             }
         }
@@ -81,16 +81,11 @@ class MpGrapherController {
     }
 
     private fun renderNewData() {
-        leftPosChart.data.clear()
-        leftVelChart.data.clear()
-        leftHdgChart.data.clear()
-        rightPosChart.data.clear()
-        rightVelChart.data.clear()
-        rightHdgChart.data.clear()
-
         val processedData = arrayListOf<PublishData>()
         data.forEach {
-            processedData.add(gson.fromJson(it, PublishData::class.java))
+            try {
+                processedData.add(gson.fromJson(it, PublishData::class.java))
+            } catch (e: Exception) {}
         }
 
         val leftPosDesiredSeries = XYChart.Series<Double, Double>()
@@ -120,6 +115,7 @@ class MpGrapherController {
 
         processedData.forEach {
             val time = it.time.toDouble()
+
             leftHdgDesiredSeries.putData(time, it.desHead)
             leftHdgActualSeries.putData(time, it.head)
             rightHdgDesiredSeries.putData(time, it.desHead)
@@ -136,18 +132,26 @@ class MpGrapherController {
             rightVelActualSeries.putData(time, it.right.vel.toDouble())
         }
 
-        leftPosChart.data.add(leftPosDesiredSeries)
-        leftPosChart.data.add(leftPosActualSeries)
-        leftVelChart.data.add(leftVelDesiredSeries)
-        leftVelChart.data.add(leftVelActualSeries)
-        leftHdgChart.data.add(leftHdgDesiredSeries)
-        leftHdgChart.data.add(leftHdgActualSeries)
-        rightPosChart.data.add(rightPosDesiredSeries)
-        rightPosChart.data.add(rightPosActualSeries)
-        rightVelChart.data.add(rightVelDesiredSeries)
-        rightVelChart.data.add(rightVelActualSeries)
-        rightHdgChart.data.add(rightHdgDesiredSeries)
-        rightHdgChart.data.add(rightHdgActualSeries)
+        Platform.runLater {
+            leftPosChart.data.clear()
+            leftVelChart.data.clear()
+            leftHdgChart.data.clear()
+            rightPosChart.data.clear()
+            rightVelChart.data.clear()
+            rightHdgChart.data.clear()
+            leftPosChart.data.add(leftPosDesiredSeries)
+            leftPosChart.data.add(leftPosActualSeries)
+            leftVelChart.data.add(leftVelDesiredSeries)
+            leftVelChart.data.add(leftVelActualSeries)
+            leftHdgChart.data.add(leftHdgDesiredSeries)
+            leftHdgChart.data.add(leftHdgActualSeries)
+            rightPosChart.data.add(rightPosDesiredSeries)
+            rightPosChart.data.add(rightPosActualSeries)
+            rightVelChart.data.add(rightVelDesiredSeries)
+            rightVelChart.data.add(rightVelActualSeries)
+            rightHdgChart.data.add(rightHdgDesiredSeries)
+            rightHdgChart.data.add(rightHdgActualSeries)
+        }
     }
 
     @FXML private fun onSubmitGains(e: ActionEvent) {
