@@ -172,15 +172,15 @@ class MpGrapherController {
     }
 
     @FXML private fun onSubmitGains(e: ActionEvent) {
-        SmartDashboard.setDouble(key("leftP"), leftP.text.toDoubleOrNull() ?: 0.0)
-        SmartDashboard.setDouble(key("leftD"), leftD.text.toDoubleOrNull() ?: 0.0)
-        SmartDashboard.setDouble(key("leftV"), leftV.text.toDoubleOrNull() ?: 0.0)
-        SmartDashboard.setDouble(key("leftA"), leftA.text.toDoubleOrNull() ?: 0.0)
-        SmartDashboard.setDouble(key("rightP"), rightP.text.toDoubleOrNull() ?: 0.0)
-        SmartDashboard.setDouble(key("rightD"), rightD.text.toDoubleOrNull() ?: 0.0)
-        SmartDashboard.setDouble(key("rightV"), rightV.text.toDoubleOrNull() ?: 0.0)
-        SmartDashboard.setDouble(key("rightA"), rightA.text.toDoubleOrNull() ?: 0.0)
-        SmartDashboard.setDouble(key("H"), H.text.toDoubleOrNull() ?: 0.0)
+        SmartDashboard.setDouble(key("leftP"), leftP.parseFractional())
+        SmartDashboard.setDouble(key("leftD"), leftD.parseFractional())
+        SmartDashboard.setDouble(key("leftV"), leftV.parseFractional())
+        SmartDashboard.setDouble(key("leftA"), leftA.parseFractional())
+        SmartDashboard.setDouble(key("rightP"), rightP.parseFractional())
+        SmartDashboard.setDouble(key("rightD"), rightD.parseFractional())
+        SmartDashboard.setDouble(key("rightV"), rightV.parseFractional())
+        SmartDashboard.setDouble(key("rightA"), rightA.parseFractional())
+        SmartDashboard.setDouble(key("H"), H.parseFractional())
     }
 
     @FXML private fun onSubmitSettings(e: ActionEvent) {
